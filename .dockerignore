@@ -1,0 +1,15 @@
+node_modules
+.output
+.vinxi
+.tanstack
+.nitro
+dist
+dist-ssr
+data
+.env
+.git
+.vscode
+.idea
+*.log
+npm-debug.log*
+prisma/generated

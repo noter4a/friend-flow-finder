@@ -1,0 +1,18 @@
+services:
+  guri:
+    build: .
+    container_name: guri-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./data/guri.db
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Persistir o banco de dados fora do container
+      - guri-data:/app/data
+
+volumes:
+  guri-data:
+    driver: local
