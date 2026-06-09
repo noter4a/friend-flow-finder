@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
 }
 
 model Client {
   id             String   @id
   name           String
-  kind           String   @default("cliente") // "cliente" | "indicador"
+  kind           String   @default("cliente")
   email          String?
   phone          String?
 
@@ -32,7 +32,7 @@ model Client {
 
   // Bancário
   bank           String?
-  accountType    String?  @default("corrente") // "corrente" | "poupanca"
+  accountType    String?  @default("corrente")
   agency         String?
   account        String?
 
@@ -41,10 +41,10 @@ model Client {
   percentage     Float    @default(0)
   referrerId     String?
 
-  // Documentos (base64)
-  docFront       String?
-  docBack        String?
+  // Documentos (base64) — LongText para imagens grandes
+  docFront       String?  @db.LongText
+  docBack        String?  @db.LongText
 
-  notes          String?
+  notes          String?  @db.Text
   createdAt      DateTime @default(now())
 }

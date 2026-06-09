@@ -6,13 +6,32 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=file:./data/guri.db
+      - DATABASE_URL=mysql://guri:guri_secret@db:3306/guri
       - NODE_ENV=production
       - PORT=3000
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: guri-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret_2026
+      MYSQL_DATABASE: guri
+      MYSQL_USER: guri
+      MYSQL_PASSWORD: guri_secret
+    ports:
+      - "3306:3306"
     volumes:
-      # Persistir o banco de dados fora do container
-      - guri-data:/app/data
+      - guri-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  guri-data:
+  guri-db-data:
     driver: local

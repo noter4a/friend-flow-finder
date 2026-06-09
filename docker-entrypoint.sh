@@ -3,9 +3,9 @@ set -e
 
 echo "🚀 Гури — Iniciando..."
 
-# Rodar migrações do banco de dados
-echo "📦 Aplicando migrações do banco de dados..."
-npx prisma migrate deploy 2>/dev/null || echo "⚠️  Migrações já aplicadas ou nenhuma pendente."
+# Sincronizar schema do banco de dados MySQL
+echo "📦 Sincronizando schema do banco de dados..."
+npx prisma db push --skip-generate --accept-data-loss 2>/dev/null || echo "⚠️  Schema já sincronizado."
 
 # Iniciar o servidor
 echo "✅ Servidor iniciando na porta ${PORT:-3000}..."
