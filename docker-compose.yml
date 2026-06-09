@@ -10,8 +10,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   db:
     image: mysql:8.0
@@ -26,11 +25,6 @@ services:
       - "3306:3306"
     volumes:
       - guri-db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   guri-db-data:
