@@ -22,7 +22,6 @@ import {
   TrendingUp,
   Wallet,
   Share2,
-  Sparkles,
 } from "lucide-react";
 import {
   useClients,
@@ -34,7 +33,7 @@ import {
 import { ClientDialog } from "@/components/client-dialog";
 import { ClientViewDialog } from "@/components/client-view-dialog";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Гури — Clientes & Financeiro" },
@@ -118,29 +117,8 @@ function Index() {
   };
 
   return (
-    <div className="min-h-screen">
+    <>
       <Toaster theme="dark" richColors position="top-right" />
-
-      {/* Header */}
-      <header className="border-b border-border/60 backdrop-blur-xl bg-background/70 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div
-              className="size-9 rounded-xl grid place-items-center"
-              style={{ background: "var(--gradient-primary)", boxShadow: "var(--shadow-glow)" }}
-            >
-              <Sparkles className="size-4 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-base font-semibold tracking-tight">Гури</h1>
-              <p className="text-xs text-muted-foreground -mt-0.5">Clientes & comissões</p>
-            </div>
-          </div>
-          <Button onClick={openNew} className="gap-2">
-            <Plus className="size-4" /> Novo cliente
-          </Button>
-        </div>
-      </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Stats */}
@@ -202,6 +180,10 @@ function Index() {
           <span className="text-xs text-muted-foreground">
             {filtered.length} resultado{filtered.length === 1 ? "" : "s"}
           </span>
+          <div className="flex-1" />
+          <Button onClick={openNew} className="gap-2">
+            <Plus className="size-4" /> Novo cliente
+          </Button>
         </div>
 
         {/* Client list */}
@@ -375,7 +357,7 @@ function Index() {
         client={viewing}
         clients={clients}
       />
-    </div>
+    </>
   );
 }
 

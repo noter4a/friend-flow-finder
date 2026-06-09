@@ -6,8 +6,29 @@ datasource db {
   provider = "mysql"
 }
 
+model User {
+  id        String    @id @default(uuid())
+  username  String    @unique
+  password  String
+  name      String
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  clients   Client[]
+  sessions  Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 model Client {
   id             String   @id
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name           String
   kind           String   @default("cliente")
   email          String?

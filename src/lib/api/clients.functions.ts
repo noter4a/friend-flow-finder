@@ -1,12 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { prisma } from "../db.server";
+import { requireAuth } from "../auth.server";
 
 // ---------------------------------------------------------------------------
-// GET all clients
+// GET all clients (admin sees all, user sees own)
 // ---------------------------------------------------------------------------
 export const getClients = createServerFn({ method: "GET" }).handler(async () => {
+  const user = await requireAuth();
+
+  const where = user.role === "admin" ? {} : { userId: user.id };
+
   const rows = await prisma.client.findMany({
+    where,
     orderBy: { createdAt: "desc" },
   });
 
@@ -56,12 +62,19 @@ const clientInput = z.object({
 export const upsertClient = createServerFn({ method: "POST" })
   .validator(clientInput)
   .handler(async ({ data }) => {
+    const user = await requireAuth();
     const { createdAt, ...rest } = data;
 
     // Convert optional empty strings to null for cleaner DB storage
     const cleaned = Object.fromEntries(
       Object.entries(rest).map(([k, v]) => [k, v === "" ? null : v]),
     ) as typeof rest;
+
+    // Check ownership on update (non-admin can only edit own clients)
+    const existing = await prisma.client.findUnique({ where: { id: data.id } });
+    if (existing && existing.userId !== user.id && user.role !== "admin") {
+      throw new Error("Sem permissão para editar este cliente");
+    }
 
     await prisma.client.upsert({
       where: { id: data.id },
@@ -71,6 +84,7 @@ export const upsertClient = createServerFn({ method: "POST" })
       },
       create: {
         ...cleaned,
+        userId: user.id,
         createdAt: new Date(createdAt),
       },
     });
@@ -84,6 +98,15 @@ export const upsertClient = createServerFn({ method: "POST" })
 export const deleteClient = createServerFn({ method: "POST" })
   .validator(z.object({ id: z.string() }))
   .handler(async ({ data }) => {
+    const user = await requireAuth();
+
+    // Check ownership (non-admin can only delete own clients)
+    const client = await prisma.client.findUnique({ where: { id: data.id } });
+    if (!client) throw new Error("Cliente não encontrado");
+    if (client.userId !== user.id && user.role !== "admin") {
+      throw new Error("Sem permissão para excluir este cliente");
+    }
+
     // Remove any referrer links pointing to this client
     await prisma.client.updateMany({
       where: { referrerId: data.id },

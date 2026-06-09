@@ -10,6 +10,7 @@ export type ClientKind = "cliente" | "indicador";
 
 export type Client = {
   id: string;
+  userId: string;
   name: string;
   kind: ClientKind;
   email?: string | null;
