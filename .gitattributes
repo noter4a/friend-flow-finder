@@ -1,0 +1,4 @@
+# Forçar LF para scripts shell (necessário para Docker em Linux)
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker-entrypoint.sh text eol=lf
