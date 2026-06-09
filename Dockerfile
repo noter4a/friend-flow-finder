@@ -3,15 +3,18 @@
 # ============================================
 
 # ---- Stage 1: Instalar dependências ----
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 
 WORKDIR /app
+
+# Instalar dependências de compilação para better-sqlite3
+RUN apk add --no-cache python3 make g++ gcc musl-dev
 
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
 
 # ---- Stage 2: Build da aplicação ----
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -28,7 +31,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # ---- Stage 3: Imagem final de produção ----
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
