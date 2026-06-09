@@ -47,11 +47,8 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/package.json ./package.json
 
-# Copiar node_modules necessários para o runtime
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/bcryptjs ./node_modules/bcryptjs
+# Copiar todos os node_modules do build
+COPY --from=builder /app/node_modules ./node_modules
 
 # Expor porta
 EXPOSE 3000
