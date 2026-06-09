@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Client {
+  id             String   @id
+  name           String
+  kind           String   @default("cliente") // "cliente" | "indicador"
+  email          String?
+  phone          String?
+
+  // Dados pessoais
+  cpf            String?
+  birthDate      String?
+  motherName     String?
+  rg             String?
+  rgIssueDate    String?
+  rgIssueState   String?
+
+  // Endereço
+  zip            String?
+  street         String?
+  number         String?
+  complement     String?
+  district       String?
+  city           String?
+  state          String?
+
+  // Bancário
+  bank           String?
+  accountType    String?  @default("corrente") // "corrente" | "poupanca"
+  agency         String?
+  account        String?
+
+  // Financeiro
+  totalValue     Float    @default(0)
+  percentage     Float    @default(0)
+  referrerId     String?
+
+  // Documentos (base64)
+  docFront       String?
+  docBack        String?
+
+  notes          String?
+  createdAt      DateTime @default(now())
+}
