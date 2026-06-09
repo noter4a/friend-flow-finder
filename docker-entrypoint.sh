@@ -7,7 +7,7 @@ echo "🚀 Гури — Iniciando..."
 echo "📦 Sincronizando schema do banco de dados..."
 MAX_RETRIES=15
 RETRY_COUNT=0
-until node node_modules/prisma/build/index.js db push --skip-generate --accept-data-loss; do
+until node node_modules/prisma/build/index.js db push --accept-data-loss; do
   RETRY_COUNT=$((RETRY_COUNT + 1))
   if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     echo "❌ Erro: Não foi possível conectar ao banco de dados após $MAX_RETRIES tentativas."
