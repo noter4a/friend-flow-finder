@@ -70,7 +70,7 @@ export async function createSession(userId: string) {
 
   setCookie(SESSION_COOKIE, session.id, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: false, // Permitir login via HTTP (IP direto)
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_EXPIRY_DAYS * 24 * 60 * 60,
